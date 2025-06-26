@@ -1,10 +1,20 @@
 Que_tranza
-Mi_carnal pulpo dice_que 10
-pulpo y_echale 5
 
-Apoco_si pulpo no_le_llega_a 100
-    Llamale_a pulpo
-Ahora_que_si_no
-    Gritale Nel
+    Mi_carnal x dice_que 10
+    Mi_carnal y dice_que 3
+
+    x y_echale 5
+    x y_quitale y
+
+
+    Apoco_si x < 1
+        Llamale_a x
+
+    Ahora_que_si_no
+        Gritale Nel
+    Camara
+
+    Llamale_a y
 
 Camara
+

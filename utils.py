@@ -7,9 +7,9 @@ def parseValue(value):
         return False
     return value
 
-def eval_condition(memo, left, op, right):
-    left_val = memo.get(left, parseValue(left))
-    right_val = memo.get(right, parseValue(right))
+def eval_condition(program, left, op, right):
+    left_val = program.memo[left] if left in program.memo else parseValue(left)
+    right_val = program.memo[right] if right in program.memo else parseValue(right)
 
     if op == "==": return left_val == right_val
     if op == "!=": return left_val != right_val
@@ -17,4 +17,16 @@ def eval_condition(memo, left, op, right):
     if op == "<": return left_val < right_val
     if op == ">=": return left_val >= right_val
     if op == "<=": return left_val <= right_val
+    
     return False
+
+def eval_skip(program, tokens):
+    if tokens[0] == "Camara":
+        return False
+    
+    for state in program.execution_stack:
+        if state.endswith(":False") and tokens[0] != "Ahora_que_si_no":
+            return True
+    return False
+    
+    
