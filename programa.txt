@@ -2,14 +2,9 @@ Que_tranza
 Mi_carnal pulpo dice_que 10
 pulpo y_echale 5
 
-Llamale_a pulpo
-
-pulpo y_quitale 3
-Llamale_a pulpo
-
-Mi_carnal iguana dice_que 4
-
-pulpo y_partelo_en iguana
-Llamale_a pulpo
+Apoco_si pulpo no_le_llega_a 100
+    Llamale_a pulpo
+Ahora_que_si_no
+    Gritale Nel
 
 Camara
