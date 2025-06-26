@@ -17,6 +17,9 @@ def eval_condition(program, left, op, right):
     if op == "<": return left_val < right_val
     if op == ">=": return left_val >= right_val
     if op == "<=": return left_val <= right_val
+    if op == "Y": return left_val and right_val
+    if op == "O": return left_val or right_val
+    if op == "No_es": return left_val != right_val
     
     return False
 
