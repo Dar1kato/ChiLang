@@ -13,7 +13,16 @@ def findValueType(value):
     if value in ["==", "!=", ">", "<", ">=", "<=", "Y", "O", "No_es"]:
         return Token(type="OPERATOR", value= value)
     
-    return Token(type="INDENTIFIER", value= value)
+    if value in ["+", "-", "*", "/"]:
+        return Token(type="MATH", value= value)
+    
+    return Token(type="IDENTIFIER", value= value)
+
+
+def link_nodes(nodes):
+    for i in range(len(nodes) - 1):
+        nodes[i].next = nodes[i + 1]
+    return nodes[0] if nodes else None
 
 
 

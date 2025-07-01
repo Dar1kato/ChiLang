@@ -12,9 +12,8 @@ commands =  {
         "Llamale_a": "Llamale_a", 
         "y_echale": "y_echale",
         "y_quitale": "y_quitale",
+        "Apoco_si": "Apoco_si",
     }
-
-
 
 def lexer(file) -> list:
     tokens = []
@@ -33,14 +32,4 @@ def lexer(file) -> list:
                 
     return tokens
                 
-            
-            
-            
-            
-        
-        
-
-        
-        
-    
     

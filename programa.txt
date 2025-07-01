@@ -4,17 +4,10 @@ Que_tranza
     Mi_carnal y dice_que 5
 
     Apoco_si x < 1
-        Gritale X es menor que 1
-
-        Apoco_si y > 3
-            Gritale Y es mayor que 3
-
-        Ahora_que_si_no
-            Gritale Y no es mayor que 3
-        Camara
+        Gritale Si
 
     Ahora_que_si_no
-        Gritale X es mayor que 1
+        Gritale No
     Camara
 
     Llamale_a y
