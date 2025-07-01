@@ -1,15 +1,25 @@
-def parseValue(value):
+from tokens import Token
+
+def findValueType(value):
     if value.isdigit():
-        return int(value)
+        return Token(type="INT", value= int(value))
+    
     if value == "Simón":
-        return True
+        return Token(type="BOOL", value=True)
+    
     if value == "Nel":
-        return False
-    return value
+        return Token(type="BOOL", value=False)
+    
+    if value in ["==", "!=", ">", "<", ">=", "<=", "Y", "O", "No_es"]:
+        return Token(type="OPERATOR", value= value)
+    
+    return Token(type="INDENTIFIER", value= value)
+
+
 
 def eval_condition(program, left, op, right):
-    left_val = program.memo[left] if left in program.memo else parseValue(left)
-    right_val = program.memo[right] if right in program.memo else parseValue(right)
+    left_val = program.memo[left] if left in program.memo else findValueType(left)
+    right_val = program.memo[right] if right in program.memo else findValueType(right)
 
     if op == "==": return left_val == right_val
     if op == "!=": return left_val != right_val
@@ -23,13 +33,26 @@ def eval_condition(program, left, op, right):
     
     return False
 
-def eval_skip(program, tokens):
+def eval_skip(program, tokens) -> bool:
+    # Siempre permitir 'Camara' para cerrar bloques
     if tokens[0] == "Camara":
         return False
+
+    if tokens[0] == "Ahora_que_si_no":
+        return False
     
-    for state in program.execution_stack:
-        if state.endswith(":False") and tokens[0] != "Ahora_que_si_no":
-            return True
-    return False
+    
+    # Si cualquier bloque activo en el stack tiene condición False, saltar
+    for block in reversed(program.execution_stack):
+        if block["closed"] == False:
+            if block["cond"] == False:
+                print("!--- Skip line")
+                return True
+            if block["cond"] == True:
+                return False
+
+
+
+
     
     

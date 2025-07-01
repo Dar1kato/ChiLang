@@ -1,6 +1,5 @@
 # parser.py
-from utils import eval_condition, parseValue, eval_skip
-from commands import get_command_map
+from utils import eval_condition, findValueType, eval_skip
 
 
 def tokenize(line):
@@ -36,20 +35,27 @@ def parseLine(program, tokens):
         var, op, val = tokens[1], tokens[2], tokens[3]
         result = eval_condition(program, var, str(op), val)
         
-        program.execution_stack.append("if:True" if result else "if:False")
+        if result:
+            program.execution_stack.append({"type": "if", "cond": True, "closed": False})
+            return
         
+        program.execution_stack.append({"type": "if", "cond": False, "closed": False})
+            
         return
         """ program.jump = False if result else True
         
         program.execution_stack.append("else:False" if result else "else:True")
         return """
-
     # Else
     if command == "Ahora_que_si_no":
-        last_if = program.execution_stack.pop()
-        
-        program.execution_stack.append("else:False" if last_if == "if:True" else "else:True")
-    
-        return
+        for block in reversed(program.execution_stack):
+            if block["type"] == "if" and block["closed"] == False:
+                block["closed"] = True
+                program.execution_stack.append({"type": "else", "cond": not block["cond"], "closed": False})
+                return
+                
 
+            
+        
+    
 
