@@ -1,4 +1,5 @@
 from tokens import Token
+from nodes import Node
 
 def findValueType(value):
     if value.isdigit():
@@ -59,7 +60,15 @@ def eval_skip(program, tokens) -> bool:
                 return True
             if block["cond"] == True:
                 return False
+            
+def evaluator(head: Node, program):
+    current = head
 
+    while current is not None:
+        #print(f"Ejecutando nodo: {current.__class__.__name__}")
+        #print(f"Nodo: {current}, siguiente: {current.next}")
+        current.call()
+        current = current.next
 
 
 

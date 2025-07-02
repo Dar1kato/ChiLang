@@ -27,10 +27,13 @@ def parser(program, tokens):
     return head
 
 
-def parseStatement(program, tokens, i):    
+def parseStatement(program, tokens, i):  
+    
+    # FUNCIONES  
     if tokens[i].type == "KEYWORD":
         match tokens[i].value:
             
+            # ASIGNAR VALOR
             case "Mi_carnal":
                 if tokens[i + 2].value == "dice_que":
                     var_name = tokens[i + 1] if tokens[i + 1].type == "IDENTIFIER" else None
@@ -41,44 +44,51 @@ def parseStatement(program, tokens, i):
                 
                 return None, 1
                 
+            # IMPRIMIR VALOR
             case "Gritale":
-                to_print = program.memo[tokens[i]] if tokens[i].value in program.memo else tokens[i].value
-                return PrintNode(value= to_print), 2
-            
-            
-            case "Apoco_si":
-                left = program.memo[tokens[i + 1].value] if tokens[i + 1].value in program.memo else tokens[i + 1].value
-                op = tokens[i + 2].value
-                right = program.memo[tokens[i + 3].value] if tokens[i + 3].value in program.memo else tokens[i + 3].value
-                i += 4
+                to_print_token = tokens[i + 1]
+                to_print = VariableNode(to_print_token.value, program) if to_print_token.type == "IDENTIFIER" else to_print_token.value
+                
+                return PrintNode(value=to_print), 2
 
+            
+            
+            # CONDICIONAL
+            case "Apoco_si":
+                left = VariableNode(tokens[i + 1].value, program) if tokens[i + 1].type == "IDENTIFIER" else tokens[i + 1]
+                op = tokens[i + 2].value
+                right = VariableNode(tokens[i + 3].value, program) if tokens[i + 3].type == "IDENTIFIER" else tokens[i + 3]
+
+                j = i + 4  
                 true_nodes = []
                 false_nodes = []
                 current_branch = true_nodes
 
-                while i < len(tokens):
-                    if tokens[i].value == "Ahora_que_si_no":
+                while j < len(tokens):
+                    if tokens[j].value == "Ahora_que_si_no":
                         current_branch = false_nodes
-                        i += 1
+                        j += 1
                         continue
-
-                    if tokens[i].value == "Camara":
-                        i += 1
+                    
+                    if tokens[j].value == "Camara":
+                        j += 1
                         break
-                        
-                    node, consumed = parseStatement(program, tokens, i)
-                    current_branch.append(node)
-                    i += consumed
+                    
+                    node, consumed = parseStatement(program, tokens, j)
+                    if node:
+                        current_branch.append(node)
+                    j += consumed
 
                 true_branch = link_nodes(true_nodes)
                 false_branch = link_nodes(false_nodes)
 
-                return ConditionalNode(left, right, op, true_branch, false_branch), int(i)
+                return ConditionalNode(left, right, op, true_branch, false_branch, program= program), j  
+                
             
             case default:
                 return None, 1
         
-                
+    # OPERADORES  MATEMATICOS   
     if tokens[i].type == "OPERATOR" and tokens[i].value in ["+", "-", "*", "/"]:
 
         if i > 0 and i + 1 < len(tokens):

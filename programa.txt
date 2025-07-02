@@ -3,14 +3,14 @@ Que_tranza
     Mi_carnal x dice_que 10
     Mi_carnal y dice_que 5
 
-    Apoco_si x < 1
+    Apoco_si x > 1
         Gritale Si
 
     Ahora_que_si_no
         Gritale No
     Camara
 
-    Llamale_a y
+    Gritale y
 
 Camara
 

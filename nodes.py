@@ -41,56 +41,65 @@ class MathNode(Node):
                 result = left_val / right_val
             case _:
                 raise ValueError(f"Operador no soportado: {self.op}")
-            
-        # Next Node
-        if self.next:
-            self.next.call()
 
         return result
 
 
 class ConditionalNode(Node):
-    def __init__(self, left, right, cond, trueOp, falseOp):
+    def __init__(self, left, right, cond, trueOp, falseOp, program):
+        super().__init__()
         self.left = left
         self.right = right
         self.cond = cond
         self.trueOp = trueOp
         self.falseOp = falseOp
-        super().__init__()
-        
-    def eval(self) -> bool:
-        left_val = self.left.call() if hasattr(self.left, "call") else self.left
-        right_val = self.right.call() if hasattr(self.right, "call") else self.right
+        self.program = program
+
+    def __repr__(self):
+        return f"ConditionalNode({self.left} {self.cond} {self.right})"
+    
+    def eval(self):
+        def resolve(value):
+            if hasattr(value, 'name'):  
+                var_name = value.name
+                if var_name in self.program.memo:
+                    resultado = self.program.memo[var_name]
+                    return resultado
+            elif isinstance(value, str) and value in self.program.memo:
+                resultado = self.program.memo[value]
+                return resultado
+            elif hasattr(value, "value"):
+                resultado = value.value
+                return resultado
+            else:
+                print(f"Devolviendo valor original: {value}")
+                return value
+
+        left_val = resolve(self.left)
+        right_val = resolve(self.right)
 
         match self.cond:
-            case "==":
-                return left_val == right_val
-            case "!=":
-                return left_val != right_val
-            case "<":
-                return left_val < right_val
-            case ">":
-                return left_val > right_val
-            
-            # Y el resto
-        
-    def call(self) -> None:
-        if self.eval():
-            self.trueOp.call()
-            
-            # Next node
-            if self.next:
-                self.next.call()
-            
-        else:
-            self.falseOp.call()
-            
-            # Next Node
-            if self.next:
-                self.next.call()
-                
-        if self.next:
-            self.next.call()
+            case "==": return left_val == right_val
+            case "!=": return left_val != right_val
+            case "<": return left_val < right_val
+            case ">": return left_val > right_val
+            case "<=": return left_val <= right_val
+            case ">=": return left_val >= right_val
+            case _: raise ValueError(f"Operador condicional desconocido: {self.cond}")
+
+    def call(self):
+        # Elegir la rama (NO llamar aquí, solo redirigir el flujo)
+        chosen_branch = self.trueOp if self.eval() else self.falseOp
+
+        if chosen_branch:
+            # Encuentra el último nodo de la rama y conéctalo con el siguiente del if
+            last = chosen_branch
+            while last.next:
+                last = last.next
+            last.next = self.next
+
+            # Redirige el flujo: reemplaza `self.next` por la rama correcta
+            self.next = chosen_branch
             
             
 class PrintNode(Node):
@@ -98,12 +107,12 @@ class PrintNode(Node):
         self.value = value
         super().__init__()
     
+    def __repr__(self):
+        return f"Imprimiendo el valor {self.value}"
+    
     def call(self):
-        print(self.value.call() if hasattr(self.value, "call") else self.value)
-        
-        # Next Node
-        if self.next:
-            self.next.call()
+        print(self.value)
+
         
         
 class VariableNode(Node):
@@ -112,6 +121,9 @@ class VariableNode(Node):
         self.program = program
         super().__init__()
         
+    def __repr__(self):
+        return f"{self.name}"
+    
     def call(self):
         return self.program.memo[self.name]
 
@@ -123,14 +135,14 @@ class AssignNode(Node):
         self.program = program
         super().__init__()
         
-    def call(self) -> None:
-        var_name = self.var.call() if hasattr(self.var, "call") else self.var
-        value = self.val.call() if hasattr(self.val, "call") else self.val
-        self.program.memo[var_name] = value
+    def __repr__(self):
+        return f"Asignando variable {self.var} con valor {self.val}"
         
-        if self.next:
-            self.next.call()
+    def call(self):
+        var_name = self.var.value
+        value = self.val.value
 
+        self.program.memo[var_name] = value
 
         
         
