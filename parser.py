@@ -1,9 +1,11 @@
-# parser.py
+import time
 from utils import link_nodes
 from nodes import StarNode, EndNode, AssignNode, PrintNode, MathNode, ConditionalNode, VariableNode
 
 
 def parser(program, tokens):
+    print("Parsing...\n")
+    time.sleep(1)
     head = None
     last = None
     i = 0
@@ -35,6 +37,7 @@ def parseStatement(program, tokens, i):
             
             # ASIGNAR VALOR
             case "Mi_carnal":
+                print(tokens[i + 2])
                 if tokens[i + 2].value == "dice_que":
                     var_name = tokens[i + 1] if tokens[i + 1].type == "IDENTIFIER" else None
                     

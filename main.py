@@ -1,8 +1,10 @@
 # main.py
 import sys
+import time
+from functools import wraps
+
 from context import Program
 from parser import parser
-from commands import get_command_map
 from lexer import lexer
 from nodes import PrintNode, AssignNode, ConditionalNode
 from utils import evaluator
@@ -32,26 +34,60 @@ def debug_tree(node, depth=0):
             print()
 
         node = node.next
-
+        
+def debug_mode(func):
+    """
+    Decorador que añade funcionalidad de debug a la función run()
+    """
+    @wraps(func)
+    def wrapper(file_name, debug=False):
+        program = Program()
+        
+        with open(file_name, 'r') as file:
+            if debug:
+                print("Starting program...\n")
+                time.sleep(1)
             
-def run(file_name):
+            tokens = lexer(file)
+            
+            if debug:
+                print("Getting tokens...\n")
+                time.sleep(1)
+                
+                for token in tokens:
+                    print(f"{token}\n")
+                    time.sleep(0.1)
+                
+                time.sleep(1)
+                print("Building AST...")
+            
+            ast = parser(program, tokens)
+            
+            if debug:
+                print("\n")
+                debug_tree(ast)
+    
+    return wrapper
+
+@debug_mode
+def run(file_name, debug: bool):
     program = Program()
     
     with open(file_name, 'r') as file:
         tokens = lexer(file)
-        #print(f"{tokens}\n")
         ast = parser(program, tokens)
-        #print("\n")
-        #debug_tree(ast)
-        evaluator(ast, program)
-
+        
+        if debug:
+            print("\nExecuting program...\n")
+            time.sleep(1)
+            
+        evaluator(ast, program)  # ¡Esto faltaba en el decorador!
            
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Uso: python3 main.py archivo.chilang")
         sys.exit(1)
 
-    run(sys.argv[1])
-
+    run(sys.argv[1], True)
 
 

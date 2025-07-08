@@ -13,12 +13,15 @@ commands =  {
         "y_echale": "y_echale",
         "y_quitale": "y_quitale",
         "Apoco_si": "Apoco_si",
+        "Ahora_que_si_no": "Ahora_que_si_no",
+        "dice_que": "dice_que"
     }
 
 def lexer(file) -> list:
-    tokens = []
+    final_tokens = []
     
     for line in file:
+        tokens = []
         lex_tokens = evalLine(line)
         
         for item in lex_tokens:
@@ -29,7 +32,9 @@ def lexer(file) -> list:
             if item in commands:
                 token = Token(type="KEYWORD", value= commands[item])
                 tokens.append(token)
+        
+        final_tokens.append(tokens) if tokens else None
                 
-    return tokens
+    return final_tokens
                 
     

@@ -1,30 +1,34 @@
 from tokens import Token
 from nodes import Node
 
+
 def findValueType(value):
     if value.isdigit():
         return Token(type="INT", value= int(value))
     
     if value == "Simón":
-        return Token(type="BOOL", value=True)
+        return Token(type="BOOL", value= True)
     
     if value == "Nel":
-        return Token(type="BOOL", value=False)
+        return Token(type="BOOL", value= False)
     
     if value in ["==", "!=", ">", "<", ">=", "<=", "Y", "O", "No_es"]:
         return Token(type="OPERATOR", value= value)
     
     if value in ["+", "-", "*", "/"]:
-        return Token(type="MATH", value= value)
+        return Token(type="OPERATOR", value= value)
+    
+    if value in ["(", ")"]:
+        return Token(type="ENCLOSURE", value= value)
     
     return Token(type="IDENTIFIER", value= value)
+
 
 
 def link_nodes(nodes):
     for i in range(len(nodes) - 1):
         nodes[i].next = nodes[i + 1]
     return nodes[0] if nodes else None
-
 
 
 def eval_condition(program, left, op, right):
@@ -43,6 +47,8 @@ def eval_condition(program, left, op, right):
     
     return False
 
+
+
 def eval_skip(program, tokens) -> bool:
     # Siempre permitir 'Camara' para cerrar bloques
     if tokens[0] == "Camara":
@@ -50,7 +56,6 @@ def eval_skip(program, tokens) -> bool:
 
     if tokens[0] == "Ahora_que_si_no":
         return False
-    
     
     # Si cualquier bloque activo en el stack tiene condición False, saltar
     for block in reversed(program.execution_stack):
@@ -60,6 +65,7 @@ def eval_skip(program, tokens) -> bool:
                 return True
             if block["cond"] == True:
                 return False
+            
             
 def evaluator(head: Node, program):
     current = head
@@ -72,5 +78,4 @@ def evaluator(head: Node, program):
 
 
 
-    
     

@@ -6,6 +6,11 @@ Que_tranza
     Apoco_si x > 1
         Gritale Si
 
+        Apoco_si y < 1
+            Gritale SEPUDOOO
+        Ahora_que_si_no
+            Gritale NOSEPUDOO
+
     Ahora_que_si_no
         Gritale No
     Camara

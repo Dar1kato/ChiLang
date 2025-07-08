@@ -13,12 +13,19 @@ class StarNode(Node):
         super().__init__()
         self.type = "Start"
         
+    def __repr__(self):
+        print("Programa iniciando")
+        
         
 class EndNode(Node):
     def __init__(self):
         super().__init__()
         self.type = "End"
         
+    def __repr__(self):
+        print("Fin del programa")
+        
+
 class MathNode(Node):
     def __init__(self, left, right, op):
         super().__init__()
